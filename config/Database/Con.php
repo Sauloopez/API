@@ -24,10 +24,16 @@ class Conection{
 
     public static function conn($module, $host, $user, $password, $database){
         try{
-            return new PDO($module.':host='.$host.';dbname='.$database, 
-            $user, $password);
+            $conn= new Conection( new PDO($module.':host='.$host.';dbname='.$database, 
+            $user, $password));
         }catch(PDOException $exp){
             return null;
         }
+
+        return $conn->getConn();
+    }
+
+    private function getConn(){
+        return $this->CONN;
     }
 }
