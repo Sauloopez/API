@@ -11,7 +11,7 @@ $conn= Conection::conn(
     //Contraseña de la base de datos
     'Saulopez1.', 
     //Nombre de la base de datos
-    'Database'
+    'API'
 );
 
 
@@ -27,7 +27,9 @@ class Conection{
             $conn= new Conection( new PDO($module.':host='.$host.';dbname='.$database, 
             $user, $password));
         }catch(PDOException $exp){
+            echo 'Error'.$exp->getMessage();
             return null;
+            
         }
 
         return $conn->getConn();
