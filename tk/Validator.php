@@ -11,10 +11,9 @@ class Validator extends Carbon{
     public static $NON_EXP_PROVIDED="4";
     public static $NON_CONTENT_PROVIDED="5";
     public static $NO_JSON_CONTENT="6";
-    private static $error_codes = ["1", "2", "3", "4", "5", "6", "7" ];
-
+    
     public static $THAT_IS_EXPIRED = "7";
-
+    public static $error_codes = ["1", "2", "3", "4", "5", "6", "7" ];
     
     private static function reqValidator($json_request_encoded){
         $req = json_decode($json_request_encoded, true);
