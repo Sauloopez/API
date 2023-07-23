@@ -17,21 +17,21 @@ class Validator extends Carbon{
 
     
     private static function reqValidator($json_request_encoded){
-        $req = json_decode($json_request_encoded);
+        $req = json_decode($json_request_encoded, true);
         if($req != null){
-            if(!isset($req->method)){
+            if(!isset($req['method'])){
                 return Validator::$NON_METHOD_PROVIDED;
             }
-            if(!isset($req->controller)){
+            if(!isset($req['controller'])){
                 return Validator::$NON_CONTROLLER_PROVIDED;
             }
-            if(!isset($req->init)){
+            if(!isset($req['init'])){
                 return Validator::$NON_INIT_PROVIDED;
             }
-            if(!isset($req->exp)){
+            if(!isset($req['exp'])){
                 return Validator::$NON_EXP_PROVIDED;
             }
-            if(!isset($req->content)){
+            if(!isset($req['content'])){
                 return Validator::$NON_CONTENT_PROVIDED;
             }
             return $req;
@@ -40,7 +40,7 @@ class Validator extends Carbon{
         return Validator::$NO_JSON_CONTENT;
     }
     /**
-     * Retorna el JSON de la request proporcionada la cual debe estar codificada en JSON.
+     * Retorna el array asociativo de la request proporcionada la cual debe estar codificada en JSON.
      * Se validan los requisitos que debe tener una request: 
      * method, controller, init, exp y content; si no existe alguno de ellos, se retorna un código de error :).
      * 
@@ -51,7 +51,7 @@ class Validator extends Carbon{
         $req = Validator::reqValidator($json_request_encoded);
 
         if(!in_array($req, Validator::$error_codes)){
-            if(Carbon::now()->getTimestamp() > $req->exp){
+            if(Carbon::now()->getTimestamp() > $req['exp']){
                 return Validator::$THAT_IS_EXPIRED;
             }
         }
