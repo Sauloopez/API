@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ), $conn);
     if($user == User::$DOESNT_EXISTS || $user == User::$EXISTS){
         echo json_encode(array(
-            'message' => 'Datos incorrectos '.$data['user']
+            'message' => 'Datos incorrectos '
         ));
     }else{
         echo json_encode(array(
