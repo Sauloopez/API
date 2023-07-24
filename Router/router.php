@@ -24,7 +24,7 @@ class Router{
         
             require_once(__DIR__.'/controllers/'.$this->controller.'.php');
         }else{
-            die($data);
+            die("Error code: $data");
         }
         
         
