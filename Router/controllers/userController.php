@@ -1,19 +1,19 @@
 <?php
 
 class userController{
-    public function create(){
-
+    public static function create(){
+        require_once (DIR.'/Api/User/Create.php');
     }
 
     public static function read(){
         require_once(DIR.'/Api/User/Read.php');
     }
 
-    public function update(){
-        
+    public static function update(){
+        require_once(DIR.'/Api/User/Update.php');
     }
 
-    public function delete(){
-        
+    public static function delete(){
+        require_once(DIR.'/Api/User/Delete.php');
     }
 }
