@@ -4,12 +4,14 @@ class User{
     private $user;
     private $password;
 
-    public static $EXISTS = '1';
-    public static $DOESNT_EXISTS = '0';
+    public Error $EXISTS;
+    public Error $DOESNT_EXISTS;
 
     public function __construct($USER= "", $PASSWORD=""){
         $this->user=$USER;
         $this->password=$PASSWORD;
+        $this->EXISTS = new Error('El usuario existe', 1);
+        $this->DOESNT_EXISTS = new Error('El usuario no existe', 0);
     }
 
     //Getters
@@ -28,11 +30,12 @@ class User{
         $stmt = $conn->prepare($query);
 
         $value = User::READ($USER, $conn);
-        if($value != User::$DOESNT_EXISTS){
-            return User::$EXISTS;
+        if($value == $USER->DOESNT_EXISTS){
+            $stmt->execute(array($USER->getUser(), $USER->getPassword()));
+            return $USER->DOESNT_EXISTS;
         }
 
-        return $stmt->execute(array($USER->getUser(), $USER->getPassword()));
+        return $USER->EXISTS;
     }
 
     public static function READ(User $USER, PDO $conn){
@@ -53,12 +56,19 @@ class User{
                 return new User($row['user'], $row['password']);
             }
             //Si el usuario existe
-            return User::$EXISTS;
+            return $USER->EXISTS;
         }
         //Si el usuario no existe
-        return User::$DOESNT_EXISTS;
+        return $USER->DOESNT_EXISTS;
     }
 
+    /**
+     * Actualiza un usuario
+     * @param User $USER Los parámetros nuevos del usuario.
+     * @param User $AUTH Los parámetros viejos del usuario
+     * @param PDO $conn El PDO conexion a la DB.
+     * @return Error|null|User Retorna nulo, si no hay autenticación.
+     */
     public static function UPDATE(User $USER, User $AUTH, PDO $conn){
         $query="UPDATE Users SET password= ? WHERE user = ?";
 
@@ -68,13 +78,16 @@ class User{
         $stmt= $conn->prepare($query);
 
         $value = User::READ($AUTH, $conn);
-        if($value == User::$DOESNT_EXISTS){
-            return User::$DOESNT_EXISTS;
-        }elseif($value == User::$EXISTS ){
-            return false;
+        if($value::class == 'User'){
+            $stmt->execute(array($USER->getPassword(), $USER->getUser()));
+            return $USER;
         }
 
-        return $stmt->execute(array($USER->getPassword(), $USER->getUser()));
+        if($value::class == 'Error'){
+            return $value;
+        }
+
+        
     }
 
     public static function DELETE(User $USER, PDO $conn){
@@ -83,14 +96,15 @@ class User{
         $stmt= $conn->prepare($query);
 
         $value = User::READ($USER, $conn);
-        if($value == User::$DOESNT_EXISTS){
-            return User::$DOESNT_EXISTS;
+        if($value == $USER->DOESNT_EXISTS){
+            return $USER->DOESNT_EXISTS;
         }
 
-        if($value == User::$EXISTS){
-            return User::$EXISTS;
+        if($value == $USER->EXISTS){
+            return $USER->EXISTS;
         }
 
-        return $stmt->execute(array($USER->getUser(), $USER->getPassword()));
+        $stmt->execute(array($USER->getUser(), $USER->getPassword()));
+        return $USER;
     }
 }
