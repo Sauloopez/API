@@ -1,7 +1,7 @@
 <?php
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Method: PUT');
+header('Access-Control-Allow-Method: GET');
 header('Access-Control-Allow-Origin: *');
 
 include_once(DIR . '/Models/User.php');
