@@ -3,19 +3,22 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Method: GET');
 
-include_once (__DIR__.'/../../Models/User.php');
-include_once (__DIR__.'/../../Config/Database/Con.php');
+include_once (DIR.'/Models/User.php');
+include_once (DIR.'/config/Database/Con.php');
 
-if($_SERVER['METHOD']= 'POST'){
-    $data = json_decode(file_get_contents('php://input'), true);
+if($_SERVER['REQUEST_METHOD'] == 'GET'){
+    $data = data['content'];
     //Se evalúan si los datos no están vacíos y a su vez, no sean nulos...
     $user = isset($data['user']) && strlen($data['user']) > 0 ? $data['user'] : die(false);
     $password = isset($data['password']) && strlen($data['password']) > 0 ? $data['password'] : die(false);
     
     $User = new User($user, $password);
-    if(User::CREATE($User, $conn)){
+    $create = User::CREATE($User, $conn) ;
+    if($create == $User->DOESNT_EXISTS){
+        echo json_encode(['message' => 'Usuario creado']);
         return true;
     }else{
+        echo json_encode(['message' => 'El usuario ya existe']);
         return false;
     }
 }
