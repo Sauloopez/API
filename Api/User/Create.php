@@ -16,9 +16,11 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
     $create = User::CREATE($User, $conn) ;
     if($create == $User->DOESNT_EXISTS){
         echo json_encode(['message' => 'Usuario creado']);
+        $User->__destruct();
         return true;
     }else{
         echo json_encode(['message' => 'El usuario ya existe']);
+        $User->__destruct();
         return false;
     }
 }

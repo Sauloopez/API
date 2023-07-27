@@ -16,9 +16,12 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
     $delete = User::DELETE($User, $conn) ;
     if($delete::class == 'Error'){
         echo json_encode(['message' => 'Datos inválidos']);
+        $User->__destruct();
         return false;
     }else{
         echo json_encode(['message' => 'Usuario: '.$delete->getUser().' eliminado']);
+        $User->__destruct();
+        $delete->__destruct();
         return true;
     }
 }

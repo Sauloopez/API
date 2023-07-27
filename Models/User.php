@@ -14,6 +14,10 @@ class User{
         $this->DOESNT_EXISTS = new Error('El usuario no existe', 0);
     }
 
+    public function __destruct(){
+        
+    }
+
     //Getters
     public function getUser(){
         return $this->user;

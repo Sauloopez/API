@@ -36,15 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $userN= new User($nuevo['user'], $nuevo['password']);
 
     $update = User::UPDATE($userN, $userA, $conn);
-
+    $userA->__destruct();
+    $userN->__destruct();
     if($update != null){
         if($update::class == 'User'){
             echo json_encode(['message' => 'Usuario: '.$update->getUser(). ', actualizado']);
+            $update->__destruct();
             return true;
         }else{
-            echo json_encode(['message' => 'Datos inválidos']);
+            echo json_encode(['message' => 'Datos invalidos']);
             return false;
         }
+    }else{
+        echo json_encode(['message' => 'Autenticacion fallida']);
     }
 
 }

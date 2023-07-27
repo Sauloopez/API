@@ -28,15 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $read = User::READ($user, $conn);
 
-    if($read == $user->DOESNT_EXISTS || $read == $user->EXISTS){
+    if($read::class == 'Error'){
         echo json_encode(array(
             'message' => 'Datos incorrectos '
         ));
+        $user->__destruct();
     }else{
         echo json_encode(array(
             'user' => $read->getUser(),
             'password' => $read->getPassword()
         ));
+        $user->__destruct();
+        $read->__destruct();
     }
 }else{
     echo json_encode(array('message' => 'petición equívoca'));
