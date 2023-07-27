@@ -15,7 +15,7 @@ class User{
     }
 
     public function __destruct(){
-        
+
     }
 
     //Getters
@@ -75,23 +75,27 @@ class User{
      */
     public static function UPDATE(User $USER, User $AUTH, PDO $conn){
         $query="UPDATE Users SET password= ? WHERE user = ?";
-
-        if($USER->getUser() != $AUTH->getUser()){
+        //Si los dos usuarios son iguales
+        if($USER->getUser() == $AUTH->getUser()){
+            //Se hace autenticacion del usuario y contraseña
+            $userA = User::READ($USER, $conn);
+            //Si no se devuelve un objeto usuario, hay error en la autenticacion...
+            if($userA::class == 'Error'){
+                //y por lo tanto ha de retornar nulo
+                return null;
+            }
+            $userA->__destruct();
+        }else{
+            //En caso de que los usuarios no sean iguales, falla la autenticacion
             return null;
         }
         $stmt= $conn->prepare($query);
 
         $value = User::READ($AUTH, $conn);
-        if($value::class == 'User'){
+        if($value::class != 'User'){
             $stmt->execute(array($USER->getPassword(), $USER->getUser()));
-            return $USER;
         }
-
-        if($value::class == 'Error'){
-            return $value;
-        }
-
-        
+        return $value;
     }
 
     public static function DELETE(User $USER, PDO $conn){
@@ -100,12 +104,8 @@ class User{
         $stmt= $conn->prepare($query);
 
         $value = User::READ($USER, $conn);
-        if($value == $USER->DOESNT_EXISTS){
+        if($value::class == 'Error'){
             return $USER->DOESNT_EXISTS;
-        }
-
-        if($value == $USER->EXISTS){
-            return $USER->EXISTS;
         }
 
         $stmt->execute(array($USER->getUser(), $USER->getPassword()));
