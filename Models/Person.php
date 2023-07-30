@@ -19,6 +19,7 @@ class Person
 
     private Error $EXISTS;
     private Error $DOESNT_EXISTS;
+    private Error $USER_DOESNT_EXISTS;
 
     //Constructor
     public function __construct(
@@ -41,6 +42,7 @@ class Person
         $this->user = $USER;
         $this->EXISTS = new Error('La persona existe', 1);
         $this->DOESNT_EXISTS = new Error('La persona no existe', 0);
+        $this->USER_DOESNT_EXISTS = new Error('El usuario asociado no existe', 2);
     }
 
     public function __destruct()
@@ -61,22 +63,27 @@ class Person
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $conn->prepare($query);
-
+        $user = new User($PERSON->getUser());
         $value = $PERSON::READ($PERSON, $conn);
-        if ($value::class == 'Error') {
-            $stmt->execute(
-                array(
-                    $PERSON->name,
-                    $PERSON->last_name,
-                    $PERSON->age,
-                    $PERSON->address,
-                    $PERSON->country,
-                    $PERSON->state,
-                    $PERSON->mobile,
-                    $PERSON->user
-                )
-            );
-            return $PERSON->DOESNT_EXISTS;
+        $valid_user = User::READ($user, $conn);
+        if ($valid_user == $user->EXISTS) {
+            if ($value::class == 'Error') {
+                $stmt->execute(
+                    array(
+                        $PERSON->name,
+                        $PERSON->last_name,
+                        $PERSON->age,
+                        $PERSON->address,
+                        $PERSON->country,
+                        $PERSON->state,
+                        $PERSON->mobile,
+                        $PERSON->user
+                    )
+                );
+                return $PERSON->DOESNT_EXISTS;
+            }
+        } else {
+            return $PERSON->USER_DOESNT_EXISTS;
         }
 
         return $value;
@@ -204,7 +211,10 @@ class Person
         return $value;
     }
 
-
+    public function withUser($user)
+    {
+        $this->user = $user;
+    }
     /**
      * @return mixed
      * Retorna el usuario de la persona

@@ -16,7 +16,9 @@ if($_SERVER['REQUEST_METHOD'] == 'GET' && isset(data['content'])){
         $data['state'], $data['mobile'], $data['user']);
         $value = Person::CREATE($person, $conn);
         if($value::class == 'Error'){
-            echo json_encode(['message' => 'Se han establecido los datos del usuario']);
+            if($value->getCode() != 2)
+                echo json_encode(['message' => 'Se han establecido los datos del usuario'.$value->getCode()]);
+            else echo json_encode(['message' => $value->getMessage()]);
         }else{
             echo json_encode(['message' => 'Este usuario ya tiene datos establecidos']);
             $value->__destruct();
