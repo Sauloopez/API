@@ -93,7 +93,7 @@ class Person
      * @return Person | Error
      * Retorna la persona a leer.
      * Se debe especificar al menos el id (user)
-     * Salida de '0' si no existe, '1' si existe.
+     * Retorna `Person` si existe el usuario con el id, `Error` si no.
      */
     public static function READ(Person $PERSON, PDO $conn)
     {
@@ -160,8 +160,7 @@ class Person
 
     /**
      * @return Error | Person
-     * Retorna true si se ejecuta y false si no.
-     * Se debe especificar todo el objeto persona, incluso el usuario y contraseña.
+     * Retorna `Error` si el usuario no existe, `Person` si sí existe
      */
     public static function UPDATE(Person $PERSON, PDO $conn)
     {
@@ -172,7 +171,7 @@ class Person
 
         $stmt = $conn->prepare($query);
 
-        $value = PERSON::READ($PERSON->getUser(), $conn);
+        $value = PERSON::READ($PERSON, $conn);
         if ($value::class != 'Error') {
             $stmt->execute(
                 array(
