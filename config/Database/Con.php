@@ -1,17 +1,18 @@
 <?php
 
 
+
 $conn= Conection::conn(
     //Modulo PDO que se va a utilizar, ejm:mysql, postgres, etc
-    'mysql', 
+    PDO, 
     //Host de la base de datos
-    'localhost', 
+    DB_HOST, 
     //Usuario de la base de datos
-    'root', 
+    DB_USER, 
     //Contraseña de la base de datos
-    'Saulopez1.', 
+    DB_PASSWORD, 
     //Nombre de la base de datos
-    'API'
+    DB
 );
 
 

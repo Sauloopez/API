@@ -1,6 +1,4 @@
 <?php
-include_once(DIR . '/Modules/Tker.php');
-include_once(DIR . '/Modules/Validator.php');
 class Router
 {
     private $controller;

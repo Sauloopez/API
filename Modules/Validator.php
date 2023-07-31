@@ -1,6 +1,5 @@
 <?php
 
-require '/var/www/html/API/vendor/autoload.php';
 
 use Carbon\Carbon;
 
